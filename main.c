@@ -1,3 +1,12 @@
+/*
+    Author: Meteo Booth, Frank Tilli, Elena Schultz
+    Assignment Number: 3
+    Date of Submission: 9/4/2024
+    Name of this file: main.c
+    Short description of contents: This program simulates students waiting for taxis after a party; it uses threads
+    and semaphores to manage student-taxi coordination and proper synchronization.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -19,6 +28,13 @@ int total_students;
 int total_taxis;
 int party_time;
 
+/*
+Function Name: student_thread
+Input to the method: Pointer to integer that represents the unique ID of the student
+Output(Return value): None
+Brief description of the task: Simulate a student attending a party for a random duration, waiting for a taxi, by adding to queue, and signaling
+when the queue reaches the max capacity to dispatch a taxi.
+*/
 void* student_thread(void* id) {
     int student_id = (int)(long)id;
 
@@ -30,7 +46,7 @@ void* student_thread(void* id) {
 
 
     sem_wait(&mutex);
-    student_queue[rear++] = student_id;  // adding students to the queue
+    student_queue[rear++] = student_id;  //adding students to the queue
     waiting_students++;
     printf("Student %d arrived at the curb. Total students waiting: %d\n", student_id, waiting_students);
 
@@ -44,6 +60,12 @@ void* student_thread(void* id) {
     pthread_exit(NULL);
 }
 
+/*
+Function Name: taxi_thread
+Input to the method: Pointer to an integer representing the unique ID of the taxi
+Output(Return value): None
+Brief description of the task: Simulates a taxi arriving, waiting for then picking up up to 4 students from the queue, and then driving home
+*/
 void* taxi_thread(void* id)
  {
     int taxi_id = (int)(long)id;
@@ -51,13 +73,13 @@ void* taxi_thread(void* id)
 
     while (1)
       {
-        // Taxi arrives and waits for students
+        //taxi arrives and waits for students
         printf("Taxi %d: I arrived at the curb.\n", taxi_id);
 
         sem_wait(&taxi_waiting);
         sem_wait(&mutex);
 
-       // sleep(taxi_sleep); //optional sleep to test if it would still pick the first 4 students that arrived if 5 were waiting
+       //sleep(taxi_sleep); //optional sleep to test if it would still pick the first 4 students that arrived if 5 were waiting
 
         printf("Taxi %d: I have students ", taxi_id);
         for (int i = 0; i < MAX_STUDENTS_PER_TAXI; i++)
@@ -83,6 +105,14 @@ void* taxi_thread(void* id)
     pthread_exit(NULL);
 }
 
+/*
+Function Name: main
+Input to the method: cmd-line arguments where argc is the number of arguments and argv is an array of argument strings options are 
+-s (# of students), -t (# of taxis), and -m (party time)
+Output(Return value): 0 to indicate successful completion of the program or EXIT_FAILURE if an error occurs
+Brief description of the task: Initalize and validate input parameters, set up semaphores and memory, create and manage
+student and taxi threads, wait for completion, and clean up resources before exiting.
+*/
 int main(int argc, char* argv[]) {
 
     for (int i = 1; i < argc; i++)
@@ -97,14 +127,14 @@ int main(int argc, char* argv[]) {
             party_time = atoi(argv[++i]);
       }
 
-    // Validate inputs
+    //validate inputs
     if (total_students != total_taxis * MAX_STUDENTS_PER_TAXI || total_students == 0 || total_taxis == 0)
       {
         fprintf(stderr, "Invalid number of students or taxis. Please try again!\n");
         exit(EXIT_FAILURE);
     }
 
-    // Dynamically allocate memory for the student queue
+    //dynamically allocate memory for the student queue
     student_queue = (int *)malloc(total_students * sizeof(int));
     if (student_queue == NULL)
       {
@@ -119,7 +149,7 @@ int main(int argc, char* argv[]) {
 
     srand(time(NULL));
 
-    //Creating both threads
+    //creating both threads
     pthread_t student_threads[total_students];
     pthread_t taxi_threads[total_taxis];
 
@@ -129,14 +159,14 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < total_taxis; i++)
       {
         pthread_create(&taxi_threads[i], NULL, taxi_thread, (void*)(long)i);
-        pthread_join(taxi_threads[i], NULL); // Ensure taxi leaves before the next arrives
+        pthread_join(taxi_threads[i], NULL); //ensure taxi leaves before the next arrives
       }
 
     //waiting for threads to finish
     for (int i = 0; i < total_students; i++)
         pthread_join(student_threads[i], NULL);
 
-    //Clears the queue and then deletes the semaphores.
+    //clear queue and then deletes the semaphores
     free(student_queue);
     sem_destroy(&taxi_waiting);
     sem_destroy(&student_ready);
