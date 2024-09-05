@@ -10,7 +10,7 @@ Create a gcc object for the .c files to easily call it:
 gcc -o main main.c -lpthread
 
 Call the command using our newly created gcc object.
-./main –s 12 –t 3 –m 10
+./main -s 12 -t 3 -m 10
 
 Limitations:
 There are no limitations that we are aware of.
