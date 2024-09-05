@@ -36,21 +36,13 @@ Brief description of the task: Simulate a student attending a party for a random
 when the queue reaches the max capacity to dispatch a taxi.
 */
 void* student_thread(void* id) {
+    //sleep(10); //Optional 10 second sleep to slow down student thread
     int student_id = (int)(long)id;
 
     int party_duration = rand() % party_time + 1;
     printf("Student %d: I am at the party. It is way more fun than what I expected...\n", student_id);
     sleep(party_duration);
-    //optional sleep to make even numbered students wait twice as long
-    /* if(student_id%2==0){
-     sleep(party_duration);
-    }*/
-
-    //optional sleep to make odd numbered students wait twice as long
-    /*if(student_id%2==1){
-     sleep(party_duration);
-    }*/
-
+  
     printf("Student %d: I am done partying and waiting for a taxi.\n", student_id);
 
 
@@ -58,7 +50,6 @@ void* student_thread(void* id) {
     student_queue[rear++] = student_id;  //adding students to the queue
     if(waiting_students<MAX_STUDENTS_PER_TAXI){
     waiting_students++;
-    printf("Student %d arrived at the curb. Total students waiting: %d\n", student_id, waiting_students);
     }
 
     if (waiting_students == MAX_STUDENTS_PER_TAXI) {
@@ -66,7 +57,6 @@ void* student_thread(void* id) {
     }
     sem_post(&mutex);
     sem_wait(&student_ready);
-    //printf("Student %d: Caught a taxi!\n", student_id);
 
     pthread_exit(NULL);
 }
@@ -79,19 +69,21 @@ Brief description of the task: Simulates a taxi arriving, waiting for then picki
 */
 void* taxi_thread(void* id)
  {
+    //sleep(10); //Optional 10 second sleep to slow down taxi thread
     int taxi_id = (int)(long)id;
     int taxi_sleep = rand() % party_time + 1;
 
     while (1)
       {
+ 	
+
         //taxi arrives and waits for students
         printf("Taxi %d: I arrived at the curb.\n", taxi_id);
 
         sem_wait(&taxi_waiting);
         sem_wait(&mutex);
 
-       //sleep(taxi_sleep); //optional sleep to test if it would still pick the first 4 students that arrived if 5 were waiting
-
+      
         printf("Taxi %d: I have students ", taxi_id);
         for (int i = 0; i < MAX_STUDENTS_PER_TAXI; i++)
           {
@@ -110,7 +102,6 @@ void* taxi_thread(void* id)
         }
 
         waiting_students -= MAX_STUDENTS_PER_TAXI;
-	//sleep(taxi_sleep);//optional sleep to make sure no new taxis arrive before the current one leaves
         printf("Taxi %d: Time to drive....BYE\n",taxi_id);
         sem_post(&mutex);
 
