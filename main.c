@@ -41,14 +41,25 @@ void* student_thread(void* id) {
     int party_duration = rand() % party_time + 1;
     printf("Student %d: I am at the party. It is way more fun than what I expected...\n", student_id);
     sleep(party_duration);
+    //optional sleep to make even numbered students wait twice as long
+    /* if(student_id%2==0){
+     sleep(party_duration);
+    }*/
+
+    //optional sleep to make odd numbered students wait twice as long
+    /*if(student_id%2==1){
+     sleep(party_duration);
+    }*/
 
     printf("Student %d: I am done partying and waiting for a taxi.\n", student_id);
 
 
     sem_wait(&mutex);
     student_queue[rear++] = student_id;  //adding students to the queue
+    if(waiting_students<MAX_STUDENTS_PER_TAXI){
     waiting_students++;
     printf("Student %d arrived at the curb. Total students waiting: %d\n", student_id, waiting_students);
+    }
 
     if (waiting_students == MAX_STUDENTS_PER_TAXI) {
         sem_post(&taxi_waiting);
@@ -91,12 +102,16 @@ void* taxi_thread(void* id)
             {
                 printf(", ");
             }
+	    else{
+		printf("\n");
+	    }
 
             sem_post(&student_ready);
         }
 
         waiting_students -= MAX_STUDENTS_PER_TAXI;
-        printf(". Time to drive....BYE\n");
+	//sleep(taxi_sleep);//optional sleep to make sure no new taxis arrive before the current one leaves
+        printf("Taxi %d: Time to drive....BYE\n",taxi_id);
         sem_post(&mutex);
 
         break;
