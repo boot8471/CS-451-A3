@@ -2,3 +2,128 @@ Author: Meteo Booth, Frank Tilli, Elena Schultz
 Assignment Number: 3
 Date of Submission: 9/4/2024
 Name of this file: demo.txt
+
+With no sleeps aside from party duration:
+
+osc@ubuntu:~/Assignment3$ gcc -o main.out main.c -pthread
+main.c:In function student_thread:
+main.c:44:5:warning:implicit declaration of function sleep [-Wimplicit-function-declaration]
+     sleep(party_duration);
+osc@ubuntu:~/Assignment3$ ./main.out -s 12 -t 3 -m 10
+Student 6: I am at the party. It is way more fun than what I expected...
+Student 7: I am at the party. It is way more fun than what I expected...
+Student 8: I am at the party. It is way more fun than what I expected...
+Student 9: I am at the party. It is way more fun than what I expected...
+Student 5: I am at the party. It is way more fun than what I expected...
+Student 10: I am at the party. It is way more fun than what I expected...
+Student 11: I am at the party. It is way more fun than what I expected...
+Taxi 0: I arrived at the curb.
+Student 4: I am at the party. It is way more fun than what I expected...
+Student 3: I am at the party. It is way more fun than what I expected...
+Student 2: I am at the party. It is way more fun than what I expected...
+Student 1: I am at the party. It is way more fun than what I expected...
+Student 0: I am at the party. It is way more fun than what I expected...
+Student 11: I am done partying and waiting for a taxi.
+Student 4: I am done partying and waiting for a taxi.
+Student 1: I am done partying and waiting for a taxi.
+Student 0: I am done partying and waiting for a taxi.
+Taxi 0: I have students 11, 4, 1, 0
+Taxi 0: Time to drive....BYE
+Taxi 1: I arrived at the curb.
+Student 8: I am done partying and waiting for a taxi.
+Student 3: I am done partying and waiting for a taxi.
+Student 6: I am done partying and waiting for a taxi.
+Student 7: I am done partying and waiting for a taxi.
+Taxi 1: I have students 8, 3, 6, 7
+Taxi 1: Time to drive....BYE
+Student 9: I am done partying and waiting for a taxi.
+Taxi 2: I arrived at the curb.
+Student 5: I am done partying and waiting for a taxi.
+Student 10: I am done partying and waiting for a taxi.
+Student 2: I am done partying and waiting for a taxi.
+Taxi 2: I have students 9, 5, 10, 2
+Taxi 2: Time to drive....BYE
+
+With a 10 second student sleep:
+
+osc@ubuntu:~/Assignment3$ gcc -o main.out main.c -pthread
+main.c:In function student_thread:
+main.c:39:5:warning: implicit declaration of function sleep [-Wimplicit-function-declaration]
+     sleep(10); //Optional 10 second sleep to slow down student thread
+osc@ubuntu:~/Assignment3$ ./main.out -s 12 -t 3 -m 10
+Taxi 0: I arrived at the curb.
+Student 5: I am at the party. It is way more fun than what I expected...
+Student 6: I am at the party. It is way more fun than what I expected...
+Student 7: I am at the party. It is way more fun than what I expected...
+Student 8: I am at the party. It is way more fun than what I expected...
+Student 9: I am at the party. It is way more fun than what I expected...
+Student 4: I am at the party. It is way more fun than what I expected...
+Student 10: I am at the party. It is way more fun than what I expected...
+Student 11: I am at the party. It is way more fun than what I expected...
+Student 3: I am at the party. It is way more fun than what I expected...
+Student 2: I am at the party. It is way more fun than what I expected...
+Student 1: I am at the party. It is way more fun than what I expected...
+Student 0: I am at the party. It is way more fun than what I expected...
+Student 1: I am done partying and waiting for a taxi.
+Student 2: I am done partying and waiting for a taxi.
+Student 8: I am done partying and waiting for a taxi.
+Student 9: I am done partying and waiting for a taxi.
+Taxi 0: I have students 1, 2, 8, 9
+Taxi 0: Time to drive....BYE
+Student 4: I am done partying and waiting for a taxi.
+Student 10: I am done partying and waiting for a taxi.
+Taxi 1: I arrived at the curb.
+Student 11: I am done partying and waiting for a taxi.
+Student 7: I am done partying and waiting for a taxi.
+Taxi 1: I have students 4, 10, 11, 7
+Taxi 1: Time to drive....BYE
+Taxi 2: I arrived at the curb.
+Student 5: I am done partying and waiting for a taxi.
+Student 6: I am done partying and waiting for a taxi.
+Student 3: I am done partying and waiting for a taxi.
+Student 0: I am done partying and waiting for a taxi.
+Taxi 2: I have students 5, 6, 3, 0
+Taxi 2: Time to drive....BYE
+
+With a 10 second taxi sleep:
+
+osc@ubuntu:~/Assignment3$ gcc -o main.out main.c -lpthread
+main.c:In function student_thread:
+main.c:44:5:warning: implicit declaration of function sleep [-Wimplicit-function-declaration]
+     sleep(party_duration);
+osc@ubuntu:~/Assignment3$ ./main.out -s 12 -t 3 -m 10
+Student 5: I am at the party. It is way more fun than what I expected...
+Student 6: I am at the party. It is way more fun than what I expected...
+Student 7: I am at the party. It is way more fun than what I expected...
+Student 8: I am at the party. It is way more fun than what I expected...
+Student 9: I am at the party. It is way more fun than what I expected...
+Student 10: I am at the party. It is way more fun than what I expected...
+Student 11: I am at the party. It is way more fun than what I expected...
+Student 4: I am at the party. It is way more fun than what I expected...
+Student 3: I am at the party. It is way more fun than what I expected...
+Student 2: I am at the party. It is way more fun than what I expected...
+Student 1: I am at the party. It is way more fun than what I expected...
+Student 0: I am at the party. It is way more fun than what I expected...
+Student 7: I am done partying and waiting for a taxi.
+Student 6: I am done partying and waiting for a taxi.
+Student 11: I am done partying and waiting for a taxi.
+Student 1: I am done partying and waiting for a taxi.
+Student 0: I am done partying and waiting for a taxi.
+Student 5: I am done partying and waiting for a taxi.
+Student 8: I am done partying and waiting for a taxi.
+Student 4: I am done partying and waiting for a taxi.
+Student 10: I am done partying and waiting for a taxi.
+Student 9: I am done partying and waiting for a taxi.
+Student 2: I am done partying and waiting for a taxi.
+Taxi 0: I arrived at the curb.
+Taxi 0: I have students 7, 6, 11, 1
+Taxi 0: Time to drive....BYE
+Student 3: I am done partying and waiting for a taxi.
+Taxi 1: I arrived at the curb.
+Taxi 1: I have students 0, 5, 8, 4
+Taxi 1: Time to drive....BYE
+Taxi 2: I arrived at the curb.
+Taxi 2: I have students 10, 9, 2, 3
+Taxi 2: Time to drive....BYE
+
+
